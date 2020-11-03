@@ -21,12 +21,16 @@ def main():
         lambda x: x[:30]
     )
     streamers = video_author_list["streamer_name"].unique()
-    for s in streamers[0:]:
+    for idx, s in enumerate(streamers):
+        print(f"now: {idx}/{len(streamers)}")
         video_list = video_author_list.query(f"streamer_name == @s")[
             "use_videos"
         ].values[0]
         for video_id in video_list:
             save_path = f"comment_list_output/{video_id}.csv"
+            if os.path.exists(save_path):
+                print(f"already exists: {video_id}")
+                continue
             archiver = TSVArchiver(save_path)
 
             try:
@@ -50,7 +54,10 @@ def main():
                 os.path.realpath(save_path)[: -len(os.path.basename(save_path))]
                 + os.path.basename(archiver.save_path),
             )
-            result = ex.extract()
+            try:
+                result = ex.extract()
+            except BaseException:
+                print("コメント取得時にエラー")
 
             # 抽出完了
             print("...Finised")
