@@ -2,8 +2,7 @@ import pandas as pd
 import os
 from pytchat import Extractor, VideoInfo, TSVArchiver
 from pytchat.exceptions import InvalidVideoIdException
-
-import signal, os
+import signal
 
 
 def disp(*args):
@@ -38,7 +37,7 @@ def main():
                 ex = Extractor(video_id, div=10, callback=disp, processor=archiver)
             except InvalidVideoIdException as e:
                 print(e)
-                exit(0)
+                continue
 
             # Ctrl+Cでキャンセルする
             signal.signal(signal.SIGINT, (lambda a, b: ex.cancel()))
@@ -47,7 +46,7 @@ def main():
             info = VideoInfo(video_id)
             if info.get_duration() == 0:
                 print("指定した動画はアーカイブされていないか、チャットデータが存在しません")
-                exit(0)
+                continue
             print("Extracting: " + info.get_title())
             print(
                 "Save path: ",
@@ -58,6 +57,7 @@ def main():
                 result = ex.extract()
             except BaseException:
                 print("コメント取得時にエラー")
+                continue
 
             # 抽出完了
             print("...Finised")
