@@ -1,11 +1,7 @@
 import ast
 import itertools
 import pandas as pd
-import multiprocessing
-from joblib import Parallel, delayed
-from typing import List
-
-num_cores = multiprocessing.cpu_count()
+from tqdm.auto import tqdm
 
 
 def get_edge(streamers, all_chat_users, chat_user):
@@ -39,12 +35,8 @@ def main():
 
     streamers = list(streamer2chat_users.keys())
     all_chat_users = list(streamer2chat_users.values())
-    processed_list = Parallel(n_jobs=num_cores, verbose=5, backend="threading")(
-        delayed(get_edge)(streamers, all_chat_users, chat_user)
-        for chat_user in unique_chat_users
-    )
     _edge_list = []
-    for chat_user in unique_chat_users:
+    for chat_user in tqdm(unique_chat_users):
         edges = get_edge(streamers, all_chat_users, chat_user)
         _edge_list.append(edges)
     edge_list = sum(_edge_list, [])
