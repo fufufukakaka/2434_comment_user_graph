@@ -23,6 +23,8 @@ def main():
     groupby_counted = groupby_counted.query("source!='ギルザレンIII世'").query(
         "target!='ギルザレンIII世'"
     )
+    # 重みが0.1以下のエッジはないものとする
+    groupby_counted = groupby_counted.query("scaled_edge_count > 0.1")
     groupby_counted.to_csv("streamer_chat_edge_scaled.csv", index=None)
 
 
