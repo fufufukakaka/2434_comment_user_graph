@@ -1,3 +1,2 @@
-comment_list_output/*
 *.csv
 !.gitkeep
