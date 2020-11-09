@@ -32,6 +32,8 @@ def main():
             _diversity.append(diversity_score)
         diversity_list.append(_diversity)
     diversity_df = pd.DataFrame(diversity_list, columns=["videoId"] + streamers)
+    diversity_df["sum_score"] = diversity_df[streamers].sum(axis=1)
+    diversity_df = diversity_df.query("sum_score > 0")
     diversity_df.to_csv("diversity_df.csv", index=None)
 
 
